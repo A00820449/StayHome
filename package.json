@@ -1,0 +1,27 @@
+{
+  "name": "stayhome",
+  "version": "0.0.1",
+  "description": "Databases Class Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/A00820449/StayHome.git"
+  },
+  "keywords": [
+    "mysql",
+    "node"
+  ],
+  "author": "Team 1",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/A00820449/StayHome/issues"
+  },
+  "homepage": "https://github.com/A00820449/StayHome#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5"
+  }
+}
