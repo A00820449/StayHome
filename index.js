@@ -30,6 +30,10 @@ app.get("/", async (req, res) => {
     }
 });
 
+app.get("*", (req, res)=>{
+    res.sendStatus(404);
+});
+
 app.listen(port, ()=>{
     console.log(`Listening on port ${port}`);
 });
