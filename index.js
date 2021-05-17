@@ -5,6 +5,7 @@ const options = require("./config.json");
 const port = options.port;
 
 const app = express();
+app.set("view engine", "ejs");
 
 const mysqloptions = {
     host    : options.mysql_host,
@@ -21,8 +22,8 @@ const dbPool = mysql.createPool(mysqloptions).promise();
 
 app.get("/", async (req, res) => {
     try {
-        const [rows, fields] = await dbPool.query("SELECT 1 + 1;");
-        res.json(rows);
+        const [rows, fields] = await dbPool.query("SELECT * FROM Branch;");
+        res.render("index", {results: rows});
     }
     catch (e) {
         console.log(e);

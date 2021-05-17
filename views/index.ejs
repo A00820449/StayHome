@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head></head>
+<body>
+    <table>
+        <tr>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip Code</th>
+            <th>Phone Number</th>
+        </tr>
+    <% results.forEach((result) => { %>
+        <tr>
+            <td><%= result.Address_Street %></td>
+            <td><%= result.Address_City %></td>
+            <td><%= result.Address_State %></td>
+            <td><%= result.Address_ZipCode %></td>
+            <td><%= result.TelephoneNum %></td>
+        </tr>
+    <% }); %>
+    </table>
+
+</body>
