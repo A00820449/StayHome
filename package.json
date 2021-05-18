@@ -4,7 +4,7 @@
   "description": "Databases Class Project",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "npm install && nodemon index.js",
     "deploy": "npm install && pm2 start index.js --name stayhome",
     "stop": "pm2 stop stayhome",
     "postinstall": "node install.js"

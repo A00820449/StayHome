@@ -1,21 +1,26 @@
 <!DOCTYPE html>
-<head></head>
+<head>
+    <title>Stay Home</title>
+    <%- include("common_headers") %> 
+</head>
 <body>
     <table>
         <tr>
+            <th>No.</th>
             <th>Street</th>
             <th>City</th>
             <th>State</th>
             <th>Zip Code</th>
             <th>Phone Number</th>
         </tr>
-    <% results.forEach((result) => { %>
+    <% branches.forEach((branch) => { %>
         <tr>
-            <td><%= result.Address_Street %></td>
-            <td><%= result.Address_City %></td>
-            <td><%= result.Address_State %></td>
-            <td><%= result.Address_ZipCode %></td>
-            <td><%= result.TelephoneNum %></td>
+            <td><%= branch.BranchNo %></td>
+            <td><%= branch.Address_Street %></td>
+            <td><%= branch.Address_City %></td>
+            <td><%= branch.Address_State %></td>
+            <td><%= branch.Address_ZipCode %></td>
+            <td><%= branch.TelephoneNum %></td>
         </tr>
     <% }); %>
     </table>

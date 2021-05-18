@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const mysql = require("mysql2");
 const options = require("./config.json");
@@ -18,12 +19,14 @@ const mysqloptions = {
     connectionLimit:    10,
     queueLimit:         0
 };
-const dbPool = mysql.createPool(mysqloptions).promise();
+const dbConnection = mysql.createPool(mysqloptions).promise();
+
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.get("/", async (req, res) => {
     try {
-        const [rows, fields] = await dbPool.query("SELECT * FROM Branch;");
-        res.render("index", {results: rows});
+        const [rows, fields] = await dbConnection.query("SELECT * FROM Branch;");
+        res.render("index", {branches: rows});
     }
     catch (e) {
         console.log(e);
