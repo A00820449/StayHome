@@ -29,7 +29,7 @@ app.get("/", async (req, res) => {
 
 app.get("/branch", async (req, res)=>{
     try {
-        const [rows, fields] = await dbConnection.query("SELECT * FROM Branch;");
+        const [rows, fields] = await dbConnection.query("SELECT * FROM Branch LIMIT 1000;");
         res.render("branch", {branches: rows});
     }
     catch (e) {
@@ -40,8 +40,19 @@ app.get("/branch", async (req, res)=>{
 
 app.get("/staff", async (req, res)=>{
     try {
-        const [rows, fields] = await dbConnection.query("SELECT * FROM Staff;");
+        const [rows, fields] = await dbConnection.query("SELECT * FROM Staff LIMIT 1000;");
         res.render("staff", {staff: rows});
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+app.get("/member", async (req, res)=>{
+    try {
+        const [rows, fields] = await dbConnection.query("SELECT * FROM Member LIMIT 1000;");
+        res.render("member", {members: rows});
     }
     catch (e) {
         console.log(e);

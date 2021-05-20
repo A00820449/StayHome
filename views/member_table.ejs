@@ -1,0 +1,20 @@
+<table>
+    <tr>
+        <th>No.</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Joined</th>
+        <th>Address</th>
+        <th>Phone Number</th>
+    </tr>
+<% members.forEach((member) => { %>
+    <tr>
+        <td><%= member.MemberNo %></td>
+        <td><%= member.FirstName + " " + member.LastName %></td>
+        <td><%= member.Gender %></td>
+        <td><%= member.DateJoined.toISOString() %></td>
+        <td><%= member.Address_Street + ", " + member.Address_City + ", " + member.Address_State + " " + member.Address_ZipCode %></td>
+        <td><%= member.TelephoneNum %></td>
+    </tr>
+<% }); %>
+</table>
