@@ -24,9 +24,24 @@ const dbConnection = mysql.createPool(mysqloptions).promise();
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.get("/", async (req, res) => {
+    res.render("index");
+});
+
+app.get("/branch", async (req, res)=>{
     try {
         const [rows, fields] = await dbConnection.query("SELECT * FROM Branch;");
-        res.render("index", {branches: rows});
+        res.render("branch", {branches: rows});
+    }
+    catch (e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+app.get("/staff", async (req, res)=>{
+    try {
+        const [rows, fields] = await dbConnection.query("SELECT * FROM Staff;");
+        res.render("staff", {staff: rows});
     }
     catch (e) {
         console.log(e);
