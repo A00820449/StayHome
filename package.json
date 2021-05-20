@@ -7,7 +7,7 @@
     "dev": "npm install && nodemon index.js",
     "deploy": "npm install && pm2 start index.js --name stayhome",
     "stop": "pm2 stop stayhome",
-    "postinstall": "node install.js"
+    "postinstall": "node bin/install.js"
   },
   "repository": {
     "type": "git",

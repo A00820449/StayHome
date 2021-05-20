@@ -4,25 +4,5 @@
     <%- include("common_headers") %> 
 </head>
 <body>
-    <table>
-        <tr>
-            <th>No.</th>
-            <th>Street</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Zip Code</th>
-            <th>Phone Number</th>
-        </tr>
-    <% branches.forEach((branch) => { %>
-        <tr>
-            <td><%= branch.BranchNo %></td>
-            <td><%= branch.Address_Street %></td>
-            <td><%= branch.Address_City %></td>
-            <td><%= branch.Address_State %></td>
-            <td><%= branch.Address_ZipCode %></td>
-            <td><%= branch.TelephoneNum %></td>
-        </tr>
-    <% }); %>
-    </table>
-
+    <%- include("branch_table", {branches}) %> 
 </body>
