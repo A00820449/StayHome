@@ -9,18 +9,28 @@
         <td><%- rental.RentalNo %> </td>
         <td><%- rental.MemberNo %> </td>
         <td>
-            <div class="inner-table">
+            <table class="inner-table">
+                <tr>
+                    <th>Catalog No</th>
+                    <th>Video No</th>
+                    <th>Title</th>
+                    <th>Date Out</th>
+                    <th>Date Returned</th>
+                </tr>
             <% rental.Videos.forEach(video => { %>
-                <div class="row">
-                    <div class="header">Catalog No:</div>
-                    <div><%- video.CatalogNo %> </div>
-                    <div class="header">Video No:</div>
-                    <div><%- video.VideoNo %> </div>
-                    <div class="header">Title:</div>
-                    <div><%- video.Title %></div>
-                </div>
+                <tr>
+                    <td><%- video.CatalogNo %> </td>
+                    <td><%- video.VideoNo %> </td>
+                    <td><%- video.Title %></td>
+                    <td><%- video.DateOut.toISOString().split("T")[0] %></td>
+                <% if (video.DateReturn) { %>
+                    <td><%- video.DateReturn.toISOString().split("T")[0] %> </td>
+                <% } else { %>
+                    <td>NOT RETURNED</td>
+                <% } %> 
+                </tr>
             <% }) %>
-            </div>
+            </table>
         </td>
     </tr>
     <% }); %>
