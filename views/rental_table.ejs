@@ -1,0 +1,27 @@
+<table>
+    <tr>
+        <th>Rental No</th>
+        <th>Member No</th>
+        <th>Videos</th>
+    </tr>
+    <% rentals.forEach(rental => { %>
+    <tr>
+        <td><%- rental.RentalNo %> </td>
+        <td><%- rental.MemberNo %> </td>
+        <td>
+            <div class="inner-table">
+            <% rental.Videos.forEach(video => { %>
+                <div class="row">
+                    <div class="header">Catalog No:</div>
+                    <div><%- video.CatalogNo %> </div>
+                    <div class="header">Video No:</div>
+                    <div><%- video.VideoNo %> </div>
+                    <div class="header">Title:</div>
+                    <div><%- video.Title %></div>
+                </div>
+            <% }) %>
+            </div>
+        </td>
+    </tr>
+    <% }); %>
+</table>
