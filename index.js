@@ -72,7 +72,7 @@ ORDER BY Rental.RentalNo
 LIMIT ${MAXQUERY};`
 ;
 
-function GroupRentals(rentals){
+function RentalGroupVideo(rentals){
     const output = rentals.reduce((acum, curr)=>{
         // Initiate object if it's the first encounter
         if (!acum[curr.RentalNo]) {
@@ -103,13 +103,62 @@ app.get("/rental", async (req, res)=>{
     try {
         const connection = await mysqlpool.getConnection();
         var [results,] = await connection.query(rentalQuery);
-        results = GroupRentals(results);
+        results = RentalGroupVideo(results);
         res.render("rental", {rentals: results});
     }
     catch(e) {
         console.log(e);
         res.sendStatus(500);
     }
+});
+
+
+const videoQuery =
+`SELECT Video.CatalogNo, Title, DailyRental, Cost, Director.DirectorID, Director.Name AS DirectorName, Actor.ActorID, Actor.Name AS ActorName
+FROM Actor_Video
+LEFT JOIN Video
+ON Video.CatalogNo = Actor_Video.CatalogNo
+LEFT JOIN Actor
+ON Actor.ActorID = Actor_Video.ActorID
+LEFT JOIN Director
+ON Director.DirectorID = Video.DirectorID
+LIMIT ${MAXQUERY};`
+
+function VideoGroupActor(videos) {
+    const output = videos.reduce((acum, curr)=>{
+        if (!acum[curr.CatalogNo]) {
+            acum[curr.CatalogNo] = {
+                CatalogNo: curr.CatalogNo,
+                Title: curr.Title,
+                DailyRental: curr.DailyRental,
+                Cost: curr.Cost,
+                DirectorID: curr.DirectorID,
+                DirectorName: curr.DirectorName,
+                Actors: []
+            }
+        }
+
+        const actor = {
+            ActorID: curr.ActorID,
+            Name: curr.ActorName
+        }
+
+        acum[curr.CatalogNo].Actors.push(actor);
+        return acum;
+    },{});
+    return Object.values(output);
+}
+
+app.get("/video", async (req, res)=>{
+    try {
+        var [results,] = await mysqlpool.query(videoQuery);
+        results = VideoGroupActor(results);
+        res.json(results);
+    }
+    catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    } 
 });
 
 app.get("*", (req, res)=>{
