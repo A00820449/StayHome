@@ -153,7 +153,13 @@ app.get("/video", async (req, res)=>{
     try {
         var [results,] = await mysqlpool.query(videoQuery);
         results = VideoGroupActor(results);
-        res.json(results);
+        results.forEach(result => {
+            result.ActorNameList = [];
+            result.ActorNameList = result.Actors.map(actor => actor.Name);
+            result.ActorNameList = result.ActorNameList.join(", ");
+        });
+        console.log(results);
+        res.render("video", {videos: results});
     }
     catch(e) {
         console.log(e);

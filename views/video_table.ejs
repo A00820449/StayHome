@@ -1,0 +1,20 @@
+<table>
+    <tr>
+        <th>No.</th>
+        <th>Title</th>
+        <th>Daily Rent</th>
+        <th>Cost</th>
+        <th>Director</th>
+        <th>Actors</th>
+    </tr>
+<% videos.forEach((video) => { %>
+    <tr>
+        <td><%= video.CatalogNo %></td>
+        <td><%= video.Title %></td>
+        <td><%= video.DailyRental %></td>
+        <td><%= video.Cost %> </td>
+        <td><%= video.DirectorName %></td>
+        <td><%= video.ActorNameList %></td>
+    </tr>
+<% }); %>
+</table>
