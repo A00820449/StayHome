@@ -82,16 +82,6 @@ AND VideoNo = ?
 FOR UPDATE;`
 ;
 
-const neverRentedCheckQuery = 
-`SELECT COUNT(*) AS NeverRented
-FROM VideoCopy
-LEFT JOIN Video_Rental
-ON Video_Rental.CatalogNo = VideoCopy.CatalogNo
-AND Video_Rental.VideoNo = VideoCopy.VideoNo
-WHERE RentalNo IS NULL
-AND VideoCopy.CatalogNo = ? AND VideoCopy.VideoNo = ?;`
-;
-
 function RentalGroupVideo(rentals){
     const output = rentals.reduce((acum, curr)=>{
         // Initiate object if it's the first encounter
@@ -135,33 +125,53 @@ app.get("/rental", async (req, res)=>{
 const MAX_MOVIES_PER_RENTAL = 10;
 
 app.post("/rental/submit", async (req, res)=>{
-    const connection = await mysqlpool.getConnection();
-    await connection.beginTransaction();
     try {
-        const [membercheckrows,] = connection.query("SELECT COUNT(*) AS Exists FROM Member WHERE MemberNo = ?",[req.body.memberno]);
-        if (membercheckrows[0].Exists <= 0) {
-            throw new Error("Member No. invalid");
-        }
-        var videoList = [];
-        for (var i = 1; i <= MAX_MOVIES_PER_RENTAL; i++) {
-            if (req.res.body["catalogno" + i.toString()] && req.res.body["videono" + i.toString()]) {
-                const currCatalogNo = req.res.body["catalogno" + i.toString()];
-                const currVideoNo = req.res.body["videono" + i.toString()];
+        const connection = await mysqlpool.getConnection();
+        await connection.beginTransaction();
+        try {
+            const memberNo = req.body["memberno"].trim();
+            const branchNo = req.body["branchno"].trim();
+            var dateOut = new Date;
+            dateOut = dateOut.toISOString().split("T")[0];
+            await connection.execute("INSERT INTO Rental (MemberNo, BranchNo, DateOut) Values (?,?,?)", [memberNo, branchNo, dateOut]);
+            const [rentalnorow,] = await connection.query("SELECT LAST_INSERT_ID() AS RentalNo;");
+            const rentalNo = rentalnorow[0].RentalNo;
+            var videoList = [];
+            for (var i = 1; i <= MAX_MOVIES_PER_RENTAL; i++) {
+                const currCatalogNo = req.body["catalogno" + i.toString()].trim();
+                const currVideoNo = req.body["videono" + i.toString()].trim();
+                if (currCatalogNo != "" || currVideoNo != "") {
 
-                const [currentlyrentcheckrows,] = await connection.query(currRentedCheckQuery, [currCatalogNo, currVideoNo]);
-                if (currentlyrentcheckrows[0].CurrentlyRented > 0) {
-                    throw new Error(`Video with Catalog No: ${currCatalogNo} and Video No: ${currVideoNo} is not available.`);
+                    const [currentlyrentcheckrows,] = await connection.query("SELECT COUNT(*) AS CurrentlyRented FROM Video_Rental WHERE DateReturn IS NULL AND CatalogNo = ? AND VideoNo = ?;", [currCatalogNo, currVideoNo]);
+                    if (currentlyrentcheckrows[0].CurrentlyRented > 0) {
+                        console.log("Rented Error");
+                        throw new Error(`Video with Catalog No: ${currCatalogNo} and Video No: ${currVideoNo} is not available.`);
+                    }
+                    videoList.push({CatalogNo: currCatalogNo, VideoNo: currVideoNo});
                 }
-                videoList.push({CatalogNo: currCatalogNo, VideoNo: currVideoNo});
             }
+            if (videoList.length < 1) {
+                console.log("No video Error");
+                throw new Error("Need at least one valid video");
+            }
+            for (const video of videoList) {
+                await connection.execute("INSERT INTO Video_Rental (RentalNo, CatalogNo, VideoNo) Values (?,?,?);",[rentalNo, video.CatalogNo, video.VideoNo]);
+            }
+            await connection.commit();
+            res.send("Rental succesfully saved");
         }
-        if (videoList.length < 1) {
-            throw new Error("Need at least one valid video");
+        catch (e) {
+            await connection.rollback();
+            console.log(e);
+            res.status(400).send(e.message);
+        }
+        finally {
+            await connection.release();
         }
     }
     catch (e) {
-        await connection.rollback();
-        res.json(e);
+        console.log(e);
+        res.sendStatus(500);
     }
 });
 
@@ -219,6 +229,18 @@ app.get("/video", async (req, res)=>{
         res.sendStatus(500);
     } 
 });
+
+const videoCopyQuery =
+`SELECT VideoCopy.CatalogNo, VideoCopy.VideoNo, BranchNo, (RentalNo IS NOT NULL AND DateReturn IS NULL) AS CurrentlyRented
+FROM VideoCopy 
+LEFT JOIN (
+    SELECT * 
+    FROM Video_Rental 
+    WHERE DateReturn IS NULL
+    ) AS Rented
+ON Rented.CatalogNo = VideoCopy.CatalogNo AND Rented.VideoNo = VideoCopy.VideoNo
+ORDER BY CatalogNo ASC;`
+;
 
 app.get("*", (req, res)=>{
     res.sendStatus(404);

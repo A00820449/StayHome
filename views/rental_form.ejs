@@ -1,1 +1,27 @@
-<form method="post" action="/rental/submit"></form>
+<form method="post" action="/rental/submit">
+    <div>
+        <span class="form-item">
+            <label for="memberno">Member No.:</label>
+            <input type="number" name="memberno">
+        </span>
+        <span class="form-item">
+            <label for="branchno">Branch No.:</label>
+            <input type="number" name="branchno">
+        </span>
+    </div>
+    <ol>
+    <% for (var i = 1; i <= 10; i++) { %> 
+        <li>
+            <span class="form-item">
+                <label for="catalogno<%=i%>">Catalog No.:</label>
+                <input type="number" name="catalogno<%=i%>">
+            </span>
+            <span class="form-item">
+                <label for="videono<%=i%>">Video No.:</label>
+                <input type="number" name="videono<%=i%>">
+            </span>
+        </li>
+    <% } %> 
+    </ol>
+    <input type="submit">
+</form>

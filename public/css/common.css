@@ -25,3 +25,10 @@ table {
 .inner-table tr:nth-child(1) {
     border-top: none;
 }
+.form-item {
+    display: inline-block;
+}
+label {
+    display: inline-block;
+    width: 100px;
+}
