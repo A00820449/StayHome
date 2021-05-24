@@ -133,9 +133,8 @@ app.post("/rental/submit", async (req, res)=>{
         try {
             const memberNo = req.body["memberno"].trim();
             const branchNo = req.body["branchno"].trim();
-            var dateOut = new Date;
-            dateOut = dateOut.toISOString().split("T")[0];
-            await connection.execute("INSERT INTO Rental (MemberNo, BranchNo, DateOut) Values (?,?,?)", [memberNo, branchNo, dateOut]);
+
+            await connection.execute("INSERT INTO Rental (MemberNo, BranchNo, DateOut) Values (?,?,CURDATE())", [memberNo, branchNo]);
             const [rentalnorow,] = await connection.query("SELECT LAST_INSERT_ID() AS RentalNo;");
             const rentalNo = rentalnorow[0].RentalNo;
             var videoList = [];
@@ -184,10 +183,8 @@ app.post("/return/submit", async (req, res)=>{
         try {
             const catalogNo = req.body.catalogno.trim();
             const videoNo = req.body.videono.trim();
-            var date = new Date();
-            date = date.toISOString().split("T")[0];
             
-            const [rows,] = await connection.query("UPDATE Video_Rental SET DateReturn := ? WHERE DateReturn IS NULL AND CatalogNo = ? AND VideoNo = ?;",[date, catalogNo, videoNo]);
+            const [rows,] = await connection.query("UPDATE Video_Rental SET DateReturn := CURDATE() WHERE DateReturn IS NULL AND CatalogNo = ? AND VideoNo = ?;",[catalogNo, videoNo]);
 
             if (rows.changedRows < 1) {
                 throw new Error("No records were changed");
@@ -256,7 +253,6 @@ app.get("/video", async (req, res)=>{
             result.ActorNameList = result.Actors.map(actor => actor.Name);
             result.ActorNameList = result.ActorNameList.join(", ");
         });
-        console.log(results);
         res.render("video", {videos: results});
     }
     catch(e) {
