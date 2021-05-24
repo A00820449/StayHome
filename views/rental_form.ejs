@@ -2,16 +2,26 @@
     <div>
         <span class="form-item">
             <label for="memberno">Member No.:</label>
-            <input type="number" name="memberno">
+            <input type="number" name="memberno" required="true">
         </span>
         <span class="form-item">
             <label for="branchno">Branch No.:</label>
-            <input type="number" name="branchno">
+            <input type="number" name="branchno" required="true">
         </span>
         <input type="submit">
     </div>
     <ol>
-    <% for (var i = 1; i <= 10; i++) { %> 
+        <li>
+            <span class="form-item">
+                <label for="catalogno1">Catalog No.:</label>
+                <input type="number" name="catalogno1" required="true">
+            </span>
+            <span class="form-item">
+                <label for="videono1">Video No.:</label>
+                <input type="number" name="videono1" required="true">
+            </span>
+        </li>
+    <% for (var i = 2; i <= 10; i++) { %> 
         <li>
             <span class="form-item">
                 <label for="catalogno<%=i%>">Catalog No.:</label>

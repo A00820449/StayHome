@@ -177,6 +177,39 @@ app.post("/rental/submit", async (req, res)=>{
     }
 });
 
+app.post("/return/submit", async (req, res)=>{
+    try {
+        const connection = await mysqlpool.getConnection();
+        await connection.beginTransaction();
+        try {
+            const catalogNo = req.body.catalogno.trim();
+            const videoNo = req.body.videono.trim();
+            var date = new Date();
+            date = date.toISOString().split("T")[0];
+            
+            const [rows,] = await connection.query("UPDATE Video_Rental SET DateReturn := ? WHERE DateReturn IS NULL AND CatalogNo = ? AND VideoNo = ?;",[date, catalogNo, videoNo]);
+
+            if (rows.changedRows < 1) {
+                throw new Error("No records were changed");
+            }
+            
+            await connection.commit();
+            res.send("Record updated");
+        }
+        catch(e) {
+            await connection.rollback();
+            console.log(e);
+            res.status(400).send(e.message);
+        }
+        finally {
+            await connection.release();
+        }
+    }
+    catch (e){
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
 
 const videoQuery =
 `SELECT Video.CatalogNo, Title, DailyRental, Cost, Director.DirectorID, Director.Name AS DirectorName, Actor.ActorID, Actor.Name AS ActorName
@@ -259,7 +292,7 @@ app.get("/videocopy",async (req,res)=>{
     }
 });
 
-app.get("*", (req, res)=>{
+app.all("*", (req, res)=>{
     res.sendStatus(404);
 });
 
