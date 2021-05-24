@@ -63,7 +63,7 @@ app.get("/member", async (req, res)=>{
 });
 
 const rentalQuery = 
-`SELECT Rental.RentalNo, Rental.MemberNo, Video_Rental.CatalogNo, Video_Rental.VideoNo, Video.Title , DateOut, DateReturn
+`SELECT Rental.RentalNo, Rental.MemberNo, Rental.BranchNo, Video_Rental.CatalogNo, Video_Rental.VideoNo, Video.Title , DateOut, DateReturn
 FROM Video_Rental
 LEFT JOIN Rental
 ON Video_Rental.RentalNo = Rental.RentalNo
@@ -89,6 +89,7 @@ function RentalGroupVideo(rentals){
             acum[curr.RentalNo] = {
                 RentalNo: curr.RentalNo,
                 MemberNo: curr.MemberNo,
+                BranchNo: curr.BranchNo,
                 Videos: []
             };
         }
@@ -115,6 +116,7 @@ app.get("/rental", async (req, res)=>{
         var [results,] = await connection.query(rentalQuery);
         results = RentalGroupVideo(results);
         res.render("rental", {rentals: results});
+        connection.release();
     }
     catch(e) {
         console.log(e);
@@ -231,7 +233,7 @@ app.get("/video", async (req, res)=>{
 });
 
 const videoCopyQuery =
-`SELECT VideoCopy.CatalogNo, VideoCopy.VideoNo, BranchNo, (RentalNo IS NOT NULL AND DateReturn IS NULL) AS CurrentlyRented
+`SELECT VideoCopy.CatalogNo, VideoCopy.VideoNo, BranchNo, Title, (RentalNo IS NOT NULL AND DateReturn IS NULL) AS CurrentlyRented
 FROM VideoCopy 
 LEFT JOIN (
     SELECT * 
@@ -239,8 +241,23 @@ LEFT JOIN (
     WHERE DateReturn IS NULL
     ) AS Rented
 ON Rented.CatalogNo = VideoCopy.CatalogNo AND Rented.VideoNo = VideoCopy.VideoNo
-ORDER BY CatalogNo ASC;`
+LEFT JOIN Video
+ON Video.CatalogNo = VideoCopy.CatalogNo
+ORDER BY CatalogNo ASC
+LIMIT ${MAXQUERY};`
 ;
+
+app.get("/videocopy",async (req,res)=>{
+    try {
+        const connection = await mysqlpool.getConnection();
+        const [rows,] = await connection.query(videoCopyQuery);
+        res.render("videocopy",{videocopies: rows});
+    }
+    catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
 
 app.get("*", (req, res)=>{
     res.sendStatus(404);

@@ -2,12 +2,14 @@
     <tr>
         <th>Rental No</th>
         <th>Member No</th>
+        <th>Branch No</th>
         <th>Videos</th>
     </tr>
     <% rentals.forEach(rental => { %>
     <tr>
         <td><%- rental.RentalNo %> </td>
         <td><%- rental.MemberNo %> </td>
+        <td><%- rental.BranchNo %> </td>
         <td>
             <table class="inner-table">
                 <tr>

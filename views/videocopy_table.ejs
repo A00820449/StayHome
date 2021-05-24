@@ -1,0 +1,22 @@
+<table>
+    <tr>
+        <th>Catalog No.</th>
+        <th>Video No.</th>
+        <th>Branch No.</th>
+        <th>Title</th>
+        <th>Status</th>
+    </tr>
+<% for (const videocopy of videocopies) { %>
+    <tr>
+        <td><%= videocopy.CatalogNo %></td>
+        <td><%= videocopy.VideoNo %></td>
+        <td><%= videocopy.BranchNo %></td>
+        <td><%= videocopy.Title %> </td>
+    <% if (videocopy.CurrentlyRented) { %> 
+        <td>Currently Rented</td>
+    <% } else { %>
+        <td>Available</td>
+    <% } %>  
+    </tr>
+<% } %>
+</table>

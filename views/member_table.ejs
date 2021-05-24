@@ -1,15 +1,17 @@
 <table>
     <tr>
         <th>No.</th>
+        <th>Branch No.</th>
         <th>Name</th>
         <th>Gender</th>
-        <th>Joined</th>
+        <th>Date Joined</th>
         <th>Address</th>
         <th>Phone Number</th>
     </tr>
 <% members.forEach((member) => { %>
     <tr>
         <td><%= member.MemberNo %></td>
+        <td><%= member.BranchNo %></td>
         <td><%= member.FirstName + " " + member.LastName %></td>
         <td><%= member.Gender %></td>
         <td><%= member.DateJoined.toISOString() %></td>
