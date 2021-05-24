@@ -23,6 +23,7 @@ const mysqloptions = {
 const mysqlpool = mysql.createPool(mysqloptions).promise();
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({extended: true}));
 
 app.get("/", async (req, res) => {
     res.render("index");
@@ -72,6 +73,25 @@ ORDER BY Rental.RentalNo
 LIMIT ${MAXQUERY};`
 ;
 
+const currRentedCheckQuery = 
+`SELECT COUNT(*) AS CurrentlyRented
+FROM Video_Rental
+WHERE DateReturn IS NULL
+AND CatalogNo = ?
+AND VideoNo = ?
+FOR UPDATE;`
+;
+
+const neverRentedCheckQuery = 
+`SELECT COUNT(*) AS NeverRented
+FROM VideoCopy
+LEFT JOIN Video_Rental
+ON Video_Rental.CatalogNo = VideoCopy.CatalogNo
+AND Video_Rental.VideoNo = VideoCopy.VideoNo
+WHERE RentalNo IS NULL
+AND VideoCopy.CatalogNo = ? AND VideoCopy.VideoNo = ?;`
+;
+
 function RentalGroupVideo(rentals){
     const output = rentals.reduce((acum, curr)=>{
         // Initiate object if it's the first encounter
@@ -109,6 +129,39 @@ app.get("/rental", async (req, res)=>{
     catch(e) {
         console.log(e);
         res.sendStatus(500);
+    }
+});
+
+const MAX_MOVIES_PER_RENTAL = 10;
+
+app.post("/rental/submit", async (req, res)=>{
+    const connection = await mysqlpool.getConnection();
+    await connection.beginTransaction();
+    try {
+        const [membercheckrows,] = connection.query("SELECT COUNT(*) AS Exists FROM Member WHERE MemberNo = ?",[req.body.memberno]);
+        if (membercheckrows[0].Exists <= 0) {
+            throw new Error("Member No. invalid");
+        }
+        var videoList = [];
+        for (var i = 1; i <= MAX_MOVIES_PER_RENTAL; i++) {
+            if (req.res.body["catalogno" + i.toString()] && req.res.body["videono" + i.toString()]) {
+                const currCatalogNo = req.res.body["catalogno" + i.toString()];
+                const currVideoNo = req.res.body["videono" + i.toString()];
+
+                const [currentlyrentcheckrows,] = await connection.query(currRentedCheckQuery, [currCatalogNo, currVideoNo]);
+                if (currentlyrentcheckrows[0].CurrentlyRented > 0) {
+                    throw new Error(`Video with Catalog No: ${currCatalogNo} and Video No: ${currVideoNo} is not available.`);
+                }
+                videoList.push({CatalogNo: currCatalogNo, VideoNo: currVideoNo});
+            }
+        }
+        if (videoList.length < 1) {
+            throw new Error("Need at least one valid video");
+        }
+    }
+    catch (e) {
+        await connection.rollback();
+        res.json(e);
     }
 });
 

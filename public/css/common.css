@@ -20,5 +20,8 @@ table {
 }
 .inner-table tr {
     background-color: rgba(255,255,255,0);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+.inner-table tr:nth-child(1) {
+    border-top: none;
 }
