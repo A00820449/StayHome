@@ -73,15 +73,6 @@ ORDER BY Rental.RentalNo
 LIMIT ${MAXQUERY};`
 ;
 
-const currRentedCheckQuery = 
-`SELECT COUNT(*) AS CurrentlyRented
-FROM Video_Rental
-WHERE DateReturn IS NULL
-AND CatalogNo = ?
-AND VideoNo = ?
-FOR UPDATE;`
-;
-
 function RentalGroupVideo(rentals){
     const output = rentals.reduce((acum, curr)=>{
         // Initiate object if it's the first encounter
