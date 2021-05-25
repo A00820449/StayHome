@@ -2,15 +2,39 @@
 <head>
     <title>Stay Home</title>
     <%- include("common_headers") %>
-</head>
-<body>
-    <h1>StayHome</h1>
-    <ul>
-        <li><a href="/branch">Branch</a></li>
-        <li><a href="/staff">Staff</a></li>
-        <li><a href="/member">Member</a></li>
-        <li><a href="/rental">Rental</a></li>
-        <li><a href="/video">Catalog</a></li>
-        <li><a href="/videocopy">Video Copy</a></li>
-    </ul>
+    <main>
+        <div class="container">     
+            <div class="row">
+                <!-- <div class="col-lg-6 col-md-6"></div> -->
+                <div class="col-lg-12 col-md-12" id="info">
+                    <h1 id="title">Stayhome</h1>
+                    <p id="phrase">El servicio de películas de la pandemia</p>
+                    <hr>
+                    <a href="/">
+                        <button type="button" class="btn btn-dark btn-sm" style="background-color: rgb(1, 1, 90);"> 
+                            Empezar búsqueda
+                        </button>
+                    </a>      
+                </div>
+            </div>
+        </div>
+        <h3 style="color: white;">Search by:</h3>
+        <ul>
+            <li><a href="/branch"><button type="button" class="btn btn-outline-light">Branch</button></a></li>
+            <li><a href="/staff"><button type="button" class="btn btn-outline-light">Staff</button></a></li>
+            <li><a href="/member"><button type="button" class="btn btn-outline-light">Member</button></a></li>
+            <li><a href="/rental"><button type="button" class="btn btn-outline-light">Rental</button></a></li>
+            <li><a href="/video"><button type="button" class="btn btn-outline-light">Catalog</button></a></li>
+            <li><a href="/videocopy"><button type="button" class="btn btn-outline-light">Video Copy</button> </a></li>
+        </ul>
+    </main>
+
+    <footer class="footer" style="position:absolute;" >
+        <div class="container py-5">
+            <div class="row">            
+            </div>
+        </div>
+</footer>
+    
 </body>
+
