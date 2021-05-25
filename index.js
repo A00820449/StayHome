@@ -134,7 +134,7 @@ app.post("/rental/submit", async (req, res)=>{
             const memberNo = req.body["memberno"].trim();
             const branchNo = req.body["branchno"].trim();
 
-            await connection.execute("INSERT INTO Rental (MemberNo, BranchNo, DateOut) Values (?,?,CURDATE())", [memberNo, branchNo]);
+            await connection.query("INSERT INTO Rental (MemberNo, BranchNo, DateOut) Values (?,?,CURDATE())", [memberNo, branchNo]);
             const [rentalnorow,] = await connection.query("SELECT LAST_INSERT_ID() AS RentalNo;");
             const rentalNo = rentalnorow[0].RentalNo;
             var videoList = [];
@@ -156,7 +156,7 @@ app.post("/rental/submit", async (req, res)=>{
                 throw new Error("Need at least one valid video");
             }
             for (const video of videoList) {
-                await connection.execute("INSERT INTO Video_Rental (RentalNo, CatalogNo, VideoNo) Values (?,?,?);",[rentalNo, video.CatalogNo, video.VideoNo]);
+                await connection.query("INSERT INTO Video_Rental (RentalNo, CatalogNo, VideoNo) Values (?,?,?);",[rentalNo, video.CatalogNo, video.VideoNo]);
             }
             await connection.commit();
             res.send("Rental succesfully saved");
