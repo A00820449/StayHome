@@ -7,6 +7,7 @@ body {
     background-size: cover;
     font-family: 'Lato', sans-serif;
     color: white;
+    padding-top: 65px;  /*For Nav Bar*/
 }
 tr {
     vertical-align: top;
