@@ -64,89 +64,11 @@ app.get("/member", async (req, res)=>{
 
 const rental = require("./routes/rental");
 const video = require("./routes/video");
+const videocopy = require("./routes/videocopy");
 
 app.use("/rental", rental);
 app.use("/video", video);
-
-/*const videoQuery =
-`SELECT Video.CatalogNo, Title, DailyRental, Cost, Director.DirectorID, Director.Name AS DirectorName, Actor.ActorID, Actor.Name AS ActorName
-FROM Actor_Video
-LEFT JOIN Video
-ON Video.CatalogNo = Actor_Video.CatalogNo
-LEFT JOIN Actor
-ON Actor.ActorID = Actor_Video.ActorID
-LEFT JOIN Director
-ON Director.DirectorID = Video.DirectorID
-LIMIT ${MAXQUERY};`
-
-function VideoGroupActor(videos) {
-    const output = videos.reduce((acum, curr)=>{
-        if (!acum[curr.CatalogNo]) {
-            acum[curr.CatalogNo] = {
-                CatalogNo: curr.CatalogNo,
-                Title: curr.Title,
-                DailyRental: curr.DailyRental,
-                Cost: curr.Cost,
-                DirectorID: curr.DirectorID,
-                DirectorName: curr.DirectorName,
-                Actors: []
-            }
-        }
-
-        const actor = {
-            ActorID: curr.ActorID,
-            Name: curr.ActorName
-        }
-
-        acum[curr.CatalogNo].Actors.push(actor);
-        return acum;
-    },{});
-    return Object.values(output);
-}
-
-app.get("/video", async (req, res)=>{
-    try {
-        var [results,] = await mysqlpool.query(videoQuery);
-        results = VideoGroupActor(results);
-        results.forEach(result => {
-            result.ActorNameList = [];
-            result.ActorNameList = result.Actors.map(actor => actor.Name);
-            result.ActorNameList = result.ActorNameList.join(", ");
-        });
-        res.render("video", {videos: results});
-    }
-    catch(e) {
-        console.log(e);
-        res.sendStatus(500);
-    } 
-});*/
-
-const videoCopyQuery =
-`SELECT VideoCopy.CatalogNo, VideoCopy.VideoNo, BranchNo, Title, (RentalNo IS NOT NULL AND DateReturn IS NULL) AS CurrentlyRented
-FROM VideoCopy 
-LEFT JOIN (
-    SELECT * 
-    FROM Video_Rental 
-    WHERE DateReturn IS NULL
-    ) AS Rented
-ON Rented.CatalogNo = VideoCopy.CatalogNo AND Rented.VideoNo = VideoCopy.VideoNo
-LEFT JOIN Video
-ON Video.CatalogNo = VideoCopy.CatalogNo
-ORDER BY CatalogNo ASC
-LIMIT ${MAXQUERY};`
-;
-
-app.get("/videocopy",async (req,res)=>{
-    try {
-        const connection = await mysqlpool.getConnection();
-        const [rows,] = await connection.query(videoCopyQuery);
-        res.render("videocopy",{videocopies: rows});
-    }
-    catch(e) {
-        console.log(e);
-        res.sendStatus(500);
-    }
-});
+app.use("/videocopy", videocopy);
 
 app.all("*", (req, res)=>{
     res.sendStatus(404);
