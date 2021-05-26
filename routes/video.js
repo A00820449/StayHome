@@ -2,53 +2,51 @@ const express = require("express");
 const router = express.Router();
 const mysqlpool = require("../db_connection_pool");
 
-const MAXQUERY = 1000;
+const PAGE_LIMIT = 100;
+const ACTOR_LIMIT = 10;
+const CATEGORY_LIMIT = 10;
 
 const videoQuery =
-`SELECT Video.CatalogNo, Title, DailyRental, Cost, Director.DirectorID, Director.Name AS DirectorName, Actor.ActorID, Actor.Name AS ActorName
-FROM Actor_Video
-LEFT JOIN Video
-ON Video.CatalogNo = Actor_Video.CatalogNo
-LEFT JOIN Actor
-ON Actor.ActorID = Actor_Video.ActorID
+`SELECT CatalogNo, Title, DailyRental, Cost, Name AS DirectorName
+FROM Video
 LEFT JOIN Director
-ON Director.DirectorID = Video.DirectorID
-LIMIT ${MAXQUERY};`
+ON Video.DirectorID = Director.DirectorID
+ORDER BY CatalogNo ASC
+LIMIT ${PAGE_LIMIT}
+;`;
 
-function VideoGroupActor(videos) {
-    const output = videos.reduce((acum, curr)=>{
-        if (!acum[curr.CatalogNo]) {
-            acum[curr.CatalogNo] = {
-                CatalogNo: curr.CatalogNo,
-                Title: curr.Title,
-                DailyRental: curr.DailyRental,
-                Cost: curr.Cost,
-                DirectorID: curr.DirectorID,
-                DirectorName: curr.DirectorName,
-                Actors: []
-            }
-        }
+const videoActorQuery =
+`SELECT Actor.ActorID, Name
+FROM Actor_Video
+LEFT JOIN Actor
+ON Actor_Video.ActorID = Actor.ActorID
+WHERE CatalogNo = ?
+LIMIT ${ACTOR_LIMIT}
+;`;
 
-        const actor = {
-            ActorID: curr.ActorID,
-            Name: curr.ActorName
-        }
-
-        acum[curr.CatalogNo].Actors.push(actor);
-        return acum;
-    },{});
-    return Object.values(output);
-}
+const videoCategoryQuery = 
+`SELECT Category.CategoryID, CategoryName
+FROM Video_Category
+LEFT JOIN Category
+ON Video_Category.CategoryID = Category.CategoryID
+WHERE CatalogNo = ?
+LIMIT ${CATEGORY_LIMIT}
+;`;
 
 router.get("/", async (req, res)=>{
     try {
-        var [results,] = await mysqlpool.query(videoQuery);
-        results = VideoGroupActor(results);
-        results.forEach(result => {
-            result.ActorNameList = [];
-            result.ActorNameList = result.Actors.map(actor => actor.Name);
-            result.ActorNameList = result.ActorNameList.join(", ");
-        });
+        const connection = await mysqlpool.getConnection();
+        var [results,] = await connection.query(videoQuery);
+        for (const video of results) {
+            video.Actors = [];
+            video.Categories = [];
+            [video.Actors,] = await connection.query(videoActorQuery, [video.CatalogNo]);
+            [video.Categories,] = await connection.query(videoCategoryQuery, [video.CatalogNo]);
+
+            video.ActorNameList = video.Actors.map(actor => actor.Name).join(", ");
+            video.CategoryNameList = video.Categories.map(category => category.CategoryName).join(", ");
+        }
+        connection.release();
         res.render("video", {videos: results});
     }
     catch(e) {

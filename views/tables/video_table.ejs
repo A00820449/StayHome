@@ -6,6 +6,7 @@
         <th>Cost</th>
         <th>Director</th>
         <th>Actors</th>
+        <th>Categories</th>
     </tr>
 <% videos.forEach((video) => { %>
     <tr>
@@ -15,6 +16,7 @@
         <td><%= video.Cost %> </td>
         <td><%= video.DirectorName %></td>
         <td><%= video.ActorNameList %></td>
+        <td><%= video.CategoryNameList %> </td>
     </tr>
 <% }); %>
 </table>
