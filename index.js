@@ -63,9 +63,12 @@ app.get("/member", async (req, res)=>{
 });
 
 const rental = require("./routes/rental");
-app.use("/rental", rental);
+const video = require("./routes/video");
 
-const videoQuery =
+app.use("/rental", rental);
+app.use("/video", video);
+
+/*const videoQuery =
 `SELECT Video.CatalogNo, Title, DailyRental, Cost, Director.DirectorID, Director.Name AS DirectorName, Actor.ActorID, Actor.Name AS ActorName
 FROM Actor_Video
 LEFT JOIN Video
@@ -116,7 +119,7 @@ app.get("/video", async (req, res)=>{
         console.log(e);
         res.sendStatus(500);
     } 
-});
+});*/
 
 const videoCopyQuery =
 `SELECT VideoCopy.CatalogNo, VideoCopy.VideoNo, BranchNo, Title, (RentalNo IS NOT NULL AND DateReturn IS NULL) AS CurrentlyRented
