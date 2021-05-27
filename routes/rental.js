@@ -91,7 +91,7 @@ router.get("/search", async(req, res)=>{
         }
         catch(e){
             console.log(e);
-            res.status(400).send(e.message);
+            res.status(400).render("error_page", {message: e.message, backUrl: "/rental"});;
         }
         finally {
             await connection.release();
@@ -143,7 +143,7 @@ router.post("/submit", async (req, res)=>{
         catch (e) {
             await connection.rollback();
             console.log(e);
-            res.status(400).send(e.message);
+            res.status(400).render("error_page", {message: e.message, backUrl: "/rental"});
         }
         finally {
             await connection.release();
@@ -175,7 +175,7 @@ router.post("/return", async (req, res)=>{
         catch(e) {
             await connection.rollback();
             console.log(e);
-            res.status(400).send(e.message);
+            res.status(400).render("error_page", {message: e.message, backUrl: "/rental"});
         }
         finally {
             await connection.release();

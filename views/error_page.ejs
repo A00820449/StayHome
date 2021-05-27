@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success</title>
+    <%- include("common_headers") %> 
+</head>
+<body>
+    <%- include("nav-bar") %> 
+    <h2>There seems to have been an error!</h2>
+    <p>Server message: <code><%= message %></code></p>
+    <div><a href=<%- JSON.stringify(backUrl) %> >Go Back</a></div>
+</body>
+</html>
