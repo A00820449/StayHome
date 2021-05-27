@@ -138,7 +138,7 @@ router.post("/submit", async (req, res)=>{
                 await connection.query("INSERT INTO Video_Rental (RentalNo, CatalogNo, VideoNo) Values (?,?,?);",[rentalNo, video.CatalogNo, video.VideoNo]);
             }
             await connection.commit();
-            res.send("Rental succesfully saved");
+            res.render("submit_success", {type: "Rental", backUrl: "/rental"});
         }
         catch (e) {
             await connection.rollback();
@@ -170,7 +170,7 @@ router.post("/return", async (req, res)=>{
             }
             
             await connection.commit();
-            res.send("Record updated");
+            res.render("update_success", {type: "Rental", backUrl: "/rental"});
         }
         catch(e) {
             await connection.rollback();
