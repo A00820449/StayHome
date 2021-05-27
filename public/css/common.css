@@ -20,6 +20,7 @@ tr:nth-child(even) {
 table {
     min-width: 550px;
     margin: 0 auto;
+    table-layout: fixed;
 }
 .table-wrapper {
     overflow: auto;

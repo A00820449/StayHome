@@ -3,30 +3,30 @@
         <th>Rental No</th>
         <th>Member No</th>
         <th>Branch No</th>
+        <th>Date Out</th>
         <th>Videos</th>
     </tr>
     <% rentals.forEach(rental => { %>
     <tr>
-        <td><%- rental.RentalNo %> </td>
-        <td><%- rental.MemberNo %> </td>
-        <td><%- rental.BranchNo %> </td>
+        <td><%= rental.RentalNo %> </td>
+        <td><%= rental.MemberNo %> </td>
+        <td><%= rental.BranchNo %> </td>
+        <td><%= rental.DateOut.toISOString().split("T")[0] %> </td>
         <td>
             <table class="inner-table">
                 <tr>
                     <th>Catalog No</th>
                     <th>Video No</th>
                     <th>Title</th>
-                    <th>Date Out</th>
                     <th>Date Returned</th>
                 </tr>
             <% rental.Videos.forEach(video => { %>
                 <tr>
-                    <td><%- video.CatalogNo %> </td>
-                    <td><%- video.VideoNo %> </td>
-                    <td><%- video.Title %></td>
-                    <td><%- video.DateOut.toISOString().split("T")[0] %></td>
+                    <td><%= video.CatalogNo %> </td>
+                    <td><%= video.VideoNo %> </td>
+                    <td><%= video.Title %></td>
                 <% if (video.DateReturn) { %>
-                    <td><%- video.DateReturn.toISOString().split("T")[0] %> </td>
+                    <td><%= video.DateReturn.toISOString().split("T")[0] %> </td>
                 <% } else { %>
                     <td>NOT RETURNED</td>
                 <% } %> 

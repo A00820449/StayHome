@@ -2,18 +2,22 @@ const express = require("express");
 const router = express.Router();
 const mysqlpool = require("../db_connection_pool");
 
-const MAXQUERY = 1000;
+const MAX_PAGE = 100;
 
 const rentalQuery = 
-`SELECT Rental.RentalNo, Rental.MemberNo, Rental.BranchNo, Video_Rental.CatalogNo, Video_Rental.VideoNo, Video.Title , DateOut, DateReturn
+`SELECT RentalNo, MemberNo, BranchNo, DateOut
+FROM Rental
+ORDER BY DateOut DESC
+LIMIT ${MAX_PAGE}
+;`;
+
+const rentalVideoQuery = 
+`SELECT Video.CatalogNo, VideoNo, Title, DateReturn
 FROM Video_Rental
-LEFT JOIN Rental
-ON Video_Rental.RentalNo = Rental.RentalNo
 LEFT JOIN Video
 ON Video.CatalogNo = Video_Rental.CatalogNo
-ORDER BY Rental.RentalNo
-LIMIT ${MAXQUERY};`
-;
+WHERE RentalNo = ?
+;`;
 
 function RentalGroupVideo(rentals){
     const output = rentals.reduce((acum, curr)=>{
@@ -47,7 +51,10 @@ router.get("/", async (req, res)=>{
     try {
         const connection = await mysqlpool.getConnection();
         var [results,] = await connection.query(rentalQuery);
-        results = RentalGroupVideo(results);
+        for (rental of results) {
+            rental.Videos = [];
+            [rental.Videos,] = await connection.query(rentalVideoQuery, [rental.RentalNo]);
+        }
         res.render("rental", {rentals: results});
         connection.release();
     }
