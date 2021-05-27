@@ -73,3 +73,6 @@ hr{
     display: inline-block;
     white-space: nowrap;
 }
+a, a:visited {
+    color: white;
+}
