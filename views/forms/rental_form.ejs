@@ -2,11 +2,11 @@
     <div>
         <span class="form-item">
             <label for="memberno">Member No.:</label>
-            <input type="number" name="memberno" required="true">
+            <input type="number" name="memberno" required="true" id="memberno">
         </span>
         <span class="form-item">
             <label for="branchno">Branch No.:</label>
-            <input type="number" name="branchno" required="true">
+            <input type="number" name="branchno" required="true" id="branchno">
         </span>
         <input type="submit">
     </div>
@@ -14,22 +14,22 @@
         <li>
             <span class="form-item">
                 <label for="catalogno1">Catalog No.:</label>
-                <input type="number" name="catalogno1" required="true">
+                <input type="number" name="catalogno1" required="true" id="catalogno1" >
             </span>
             <span class="form-item">
                 <label for="videono1">Video No.:</label>
-                <input type="number" name="videono1" required="true">
+                <input type="number" name="videono1" required="true" id="videono1">
             </span>
         </li>
     <% for (var i = 2; i <= 10; i++) { %> 
         <li>
             <span class="form-item">
                 <label for="catalogno<%=i%>">Catalog No.:</label>
-                <input type="number" name="catalogno<%=i%>">
+                <input type="number" name="catalogno<%=i%>" id="catalogno<%=i%>">
             </span>
             <span class="form-item">
                 <label for="videono<%=i%>">Video No.:</label>
-                <input type="number" name="videono<%=i%>">
+                <input type="number" name="videono<%=i%>" id="videono<%=i%>">
             </span>
         </li>
     <% } %> 

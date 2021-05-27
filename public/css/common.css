@@ -69,3 +69,7 @@ hr{
     margin-left: 10%;
     margin-right: 10%;
 }
+.bundle {
+    display: inline-block;
+    white-space: nowrap;
+}

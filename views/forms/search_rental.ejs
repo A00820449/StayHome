@@ -1,0 +1,19 @@
+<form action="/rental/search" method="GET">
+    <div class="form-item">
+        <label for="afterdate">After:</label>
+        <input type="date" name="afterdate" id="afterdate">
+    </div>
+    <div class="form-item">
+        <label for="beforedate">Before:</label>
+        <input type="date" name="beforedate" id="beforedate">
+    </div>
+    <div class="form-item">
+        <label for="pendingonly">Return pending only?</label>
+        <input type="checkbox" name="pendingonly" value="true" id="pendingonly">
+    </div>
+    <!--<div class="form-item">
+        <label for="hastitle">Has Tile:</label>
+        <input type="text" name="hastitle" id="hastitle">
+    </div>-->
+    <input type="submit" value="Search">
+</form>
