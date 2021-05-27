@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const mysqlpool = require("../db_connection_pool");
 
-const MAX_PAGE = 100;
+const RECENT_MAX = 10;
 
-const rentalQuery = 
+const latestRentalQuery = 
 `SELECT RentalNo, MemberNo, BranchNo, DateOut
 FROM Rental
 ORDER BY DateOut DESC
-LIMIT ${MAX_PAGE}
+LIMIT ${RECENT_MAX}
 ;`;
 
 const rentalVideoQuery = 
@@ -19,44 +19,83 @@ ON Video.CatalogNo = Video_Rental.CatalogNo
 WHERE RentalNo = ?
 ;`;
 
-function RentalGroupVideo(rentals){
-    const output = rentals.reduce((acum, curr)=>{
-        // Initiate object if it's the first encounter
-        if (!acum[curr.RentalNo]) {
-            acum[curr.RentalNo] = {
-                RentalNo: curr.RentalNo,
-                MemberNo: curr.MemberNo,
-                BranchNo: curr.BranchNo,
-                Videos: []
-            };
-        }
-        
-        const vid = {
-            CatalogNo: curr.CatalogNo,
-            VideoNo: curr.VideoNo,
-            Title: curr.Title,
-            DateOut: curr.DateOut,
-            DateReturn: curr.DateReturn
-        };
+const rentalQuery = 
+`SELECT RentalNo, MemberNo, BranchNo, DateOut
+FROM Rental
+WHERE DateOut >= ?
+AND DateOut <= ?
+ORDER BY DateOut DESC
+;`;
 
-        acum[curr.RentalNo].Videos.push(vid);
-        
-        return acum;
-    },{});
-
-    return Object.values(output);
-};
+const pendingRentalQuery =
+`SELECT RentalNo, MemberNo, BranchNo, DateOut
+FROM Rental
+WHERE RentalNo IN (
+    SELECT DISTINCT Rental.RentalNo
+    FROM Rental
+    LEFT JOIN Video_Rental
+    ON Video_Rental.RentalNo = Rental.RentalNo
+    WHERE CatalogNo IS NOT NULL
+    AND DateReturn IS NULL
+)
+AND DateOut >= ?
+AND DateOut <= ?
+ORDER BY DateOut DESC
+;`;
 
 router.get("/", async (req, res)=>{
     try {
         const connection = await mysqlpool.getConnection();
-        var [results,] = await connection.query(rentalQuery);
+        var [results,] = await connection.query(latestRentalQuery);
         for (rental of results) {
             rental.Videos = [];
             [rental.Videos,] = await connection.query(rentalVideoQuery, [rental.RentalNo]);
         }
         res.render("rental", {rentals: results});
         connection.release();
+    }
+    catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/search", async(req, res)=>{
+    try {
+        const connection = await mysqlpool.getConnection();
+        try {
+            var initalDate = req.query.afterdate.trim();
+            var finalDate = req.query.beforedate.trim();
+            
+            if (initalDate == "") {
+                initalDate = "1000-01-01";
+            }
+            if (finalDate == "") {
+                finalDate = "9999-12-31";
+            }
+            
+            var results = []
+            if (req.query.pendingonly) {
+                [results,] = await connection.query(pendingRentalQuery, [initalDate, finalDate]);
+            }
+            else {
+                [results,] = await connection.query(rentalQuery, [initalDate, finalDate]);
+            }
+
+            for (rental of results) {
+                rental.Videos = [];
+                [rental.Videos,] = await connection.query(rentalVideoQuery, [rental.RentalNo]);
+            }
+
+            res.render("rental_results", {rentals: results});
+        }
+        catch(e){
+            console.log(e);
+            res.status(400).send(e.message);
+        }
+        finally {
+            await connection.release();
+        }
     }
     catch(e) {
         console.log(e);
