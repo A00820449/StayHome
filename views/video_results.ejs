@@ -10,10 +10,14 @@
         <a href="/video">&lt; Go Back</a>
     </div>
     <div>
+    <% if (videos.length > 0) { %> 
         <h2>Results for '<%= searchterm %>' </h2>
         <div class="table-wrapper">
             <%- include("tables/video_table", videos) %> 
         </div>
+    <% } else { %> 
+        <h2>No results for '<%= searchterm %>' </h2>
+    <% } %> 
     </div>
 </body>
 </html>
