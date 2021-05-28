@@ -136,7 +136,7 @@ router.get("/search", async (req, res)=>{
             }
             var [results,] = await connection.query(queryString, [searchterm]);
             results = await AddActorAndCategory(results, connection);
-            res.json(results);
+            res.render("video_results", {videos: results, searchterm: searchterm});
         }
         catch(e) {
             console.log(e);

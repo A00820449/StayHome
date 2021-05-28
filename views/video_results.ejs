@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stay Home - Rental Results</title>
+    <%- include("common_headers") %> 
+</head>
+<body>
+    <%- include("nav-bar") %>
+    <div>
+        <a href="/video">&lt; Go Back</a>
+    </div>
+    <div>
+        <h2>Results for '<%= searchterm %>' </h2>
+        <div class="table-wrapper">
+            <%- include("tables/video_table", videos) %> 
+        </div>
+    </div>
+</body>
+</html>
