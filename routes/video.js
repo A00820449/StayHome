@@ -116,8 +116,8 @@ router.get("/search", async (req, res)=>{
         const connection = await mysqlpool.getConnection();
         try {
             const mode = req.query.searchoption.trim().toLowerCase();
-            var searchterm = req.query.searchtext.trim().toLowerCase();
-            searchterm = EscapeForSQLLike(searchterm);
+            const searchtermunescaped = req.query.searchtext.trim().toLowerCase();
+            searchterm = EscapeForSQLLike(searchtermunescaped);
             let queryString;
             if (mode === "title") {
                 queryString = videoSearchQuery_Title;
@@ -136,7 +136,7 @@ router.get("/search", async (req, res)=>{
             }
             var [results,] = await connection.query(queryString, [searchterm]);
             results = await AddActorAndCategory(results, connection);
-            res.render("video_results", {videos: results, searchterm: searchterm});
+            res.render("video_results", {videos: results, searchterm: searchtermunescaped});
         }
         catch(e) {
             console.log(e);
