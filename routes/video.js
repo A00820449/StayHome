@@ -132,7 +132,7 @@ router.get("/search", async (req, res)=>{
                 queryString = videoSearchQuery_Director;
             }
             else {
-                throw new Error("Search mode missing");
+                throw new Error("Search mode invalid");
             }
             var [results,] = await connection.query(queryString, [searchterm]);
             results = await AddActorAndCategory(results, connection);
