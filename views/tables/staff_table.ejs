@@ -1,18 +1,20 @@
 <table>
     <tr>
-        <th>No.</th>
+        <th>Staff No.</th>
+        <th>Branch No.</th>
         <th>Name</th>
         <th>Gender</th>
         <th>Salary</th>
         <th>Position</th>
     </tr>
-<% staff.forEach((staffmem) => { %>
+<% for (const staffmem of staff) { %>
     <tr>
         <td><%= staffmem.StaffNo %></td>
+        <td><%= staffmem.BranchNo %> </td>
         <td><%= staffmem.Name %></td>
         <td><%= staffmem.Gender %></td>
         <td><%= staffmem.Salary %></td>
         <td><%= staffmem.Position %></td>
     </tr>
-<% }); %>
+<% } %>
 </table>

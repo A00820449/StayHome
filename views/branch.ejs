@@ -7,7 +7,13 @@
 <body>
     <%- include("nav-bar") %> 
     <div class="table-wrapper">
-        <%- include("tables/branch_table") %> 
+    <% for (const branch of branches) { %> 
+        <h2>Branch Info:</h2>
+        <%- include("tables/branch_table", {branches: [branch]}) %> 
+        <h3>Staff:</h3>
+        <%- include("tables/staff_table", {staff: branch.Staff}) %> 
+        <br>
+    <% } %> 
     </div>
 </body>
 </html>

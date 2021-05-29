@@ -1,12 +1,14 @@
 <table>
     <tr>
-        <th>No.</th>
+        <th>Branch No.</th>
+        <th>Manager Staff No.</th>
         <th>Address</th>
         <th>Phone Number</th>
     </tr>
 <% branches.forEach((branch) => { %>
     <tr>
         <td><%= branch.BranchNo %></td>
+        <td><%= branch.ManagerStaffNo %> </td>
         <td><%= branch.Address_Street + ", " + branch.Address_City + ", " + branch.Address_State + " " + branch.Address_ZipCode %></td>
         <td><%= branch.TelephoneNum %></td>
     </tr>
