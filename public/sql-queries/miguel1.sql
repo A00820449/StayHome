@@ -1,0 +1,1 @@
+SELECT BranchNo, TelephoneNum from Branch;

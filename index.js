@@ -10,7 +10,7 @@ const videocopy = require("./routes/videocopy");
 const branch = require("./routes/branch");
 const staff = require("./routes/staff");
 const member = require("./routes/member");
-
+const teamqueries = require("./routes/team-queries");
 
 const port = options.port;
 
@@ -30,6 +30,7 @@ app.use("/member", member);
 app.use("/rental", rental);
 app.use("/video", video);
 app.use("/videocopy", videocopy);
+app.use("/team-queries", teamqueries);
 
 app.all("*", (req, res)=>{
     res.sendStatus(404);

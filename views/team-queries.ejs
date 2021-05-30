@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stay Home - Staff</title>
+    <%- include("common_headers") %> 
+</head>
+<body>
+    <%- include("nav-bar") %>
+    <h3>Team Queries</h3>
+    <ul>
+        <% for( file of files ) { %>
+        <% const link = new URLSearchParams({filename: file}) %> 
+        <li><a href=<%= "/team-queries/file?" + link.toString() %>><%= file %></a></li>
+        <% } %>
+    </ul>
+</body>
+</html>
