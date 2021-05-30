@@ -7,7 +7,6 @@ const mysqlpool = require("../db_connection_pool");
 router.get("/", async (req, res)=>{
     try {
         const files = fs.readdirSync(path.join(__dirname,"../public/sql-queries"));
-        console.log(files);
         res.render("team-queries",{files});
     }
     catch (e) {
@@ -26,7 +25,7 @@ router.get("/file", async (req, res)=> {
     }
     catch(e) {
         console.log(e);
-        res.status(500).json(e.message);
+        res.status(500).render("error_page", {message: e.message, backUrl: "/team-queries"});
     }
 });
 

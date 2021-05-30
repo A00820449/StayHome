@@ -91,7 +91,7 @@ router.get("/search", async(req, res)=>{
         }
         catch(e){
             console.log(e);
-            res.status(400).render("error_page", {message: e.message, backUrl: "/rental"});;
+            res.status(400).render("error_page", {message: e.message, backUrl: "/rental"});
         }
         finally {
             await connection.release();
