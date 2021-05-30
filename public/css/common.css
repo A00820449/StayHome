@@ -18,9 +18,9 @@ tr:nth-child(even) {
     background-color: rgba(255, 255, 255, 0.2);
 }
 table {
-    min-width: max(550px, 100%);
+    width: max(550px, 100%);
     margin: 0 auto;
-    table-layout: fixed;
+    table-layout: auto;
 }
 .table-wrapper {
     overflow: auto;

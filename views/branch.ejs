@@ -8,9 +8,38 @@
     <%- include("nav-bar") %> 
     <div class="table-wrapper">
     <% for (const branch of branches) { %> 
-        <h2>Branch Info:</h2>
+        <h2>Branch <%= branch.BranchNo %>  Info:</h2>
         <%- include("tables/branch_table", {branches: [branch]}) %> 
         <h3>Staff:</h3>
+        <form action="/staff/submit/confirmation" method="GET">
+            <input type="hidden" name="branchno" value=<%- JSON.stringify(branch.BranchNo) %> >
+            <span class="form-item">
+                <label>Full Name:</label>
+                <input type="text" name="name" required="true">
+            </span>
+            <span class="form-item">
+                <label>Gender:</label>
+                <select name="gender">
+                    <option value="M">M</option>
+                    <option value="F">F</option>
+                </select>
+            </span>
+            <span class="form-item">
+                <label>Salary:</label>
+                <input style="width: 100px;" type="number" step="0.01" name="salary">
+            </span>
+            <span class="form-item">
+                <label>Position</label>
+                <select name="position">
+                    <option value="Other">Other</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Assistant">Assistant</option>
+                    <option value="Salesclerk">Salesclerk</option>
+                </select>
+            </span>
+            </span>
+            <input type="submit" value="Add Staff">
+        </form>
         <%- include("tables/staff_table", {staff: branch.Staff}) %> 
         <br>
     <% } %> 
