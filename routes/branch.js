@@ -6,6 +6,10 @@ async function BranchAddStaff(branches, connection) {
     for (var branch of branches) {
         branch.Staff = [];
         [branch.Staff,] = await connection.query(`SELECT * FROM Staff WHERE BranchNo = ?;`, [branch.BranchNo]);
+        for (staff of branch.Staff) {
+            const query = new URLSearchParams({staffno: staff.StaffNo});
+            staff.EditUrl = "/staff/edit?" + query.toString();
+        }
     }
     return branches;
 }

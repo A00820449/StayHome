@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stay Home - Staff</title>
+    <%- include("common_headers") %> 
+</head>
+<body>
+    <%- include("nav-bar") %>
+    <form>
+        <div>
+            <label for="staffnoform">Staff No.:</label>
+            <input id="staffnoform" type="number" value=<%= staff.StaffNo %> readonly="true">
+        </div>
+        <div>
+            <label for="formname">Full Name:</label>
+            <input id="formname" type="text" value=<%= staff.Name %>>
+        </div>
+        <div>
+            <label for="positionform">Position:</label>
+            <select id="positionform">
+                <% const positions = ["Manager", "Salesclerck", "Assistant", "Other"] %> 
+                <option value=<%= staff.Position %> ><%= staff.Position %> (Current)</option>
+                <% for (const position of positions) { %> 
+                    <% if (position != staff.Position) { %>
+                <option value=<%= position %> ><%= position %> </option>
+                    <% } %>
+                <% } %> 
+            </select>
+        </div>
+    </form>
+</body>
+</html>

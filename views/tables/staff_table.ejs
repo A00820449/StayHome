@@ -6,6 +6,7 @@
         <th>Gender</th>
         <th>Salary</th>
         <th>Position</th>
+        <th>Edit</th>
     </tr>
 <% for (const staffmem of staff) { %>
     <tr>
@@ -15,6 +16,7 @@
         <td><%= staffmem.Gender %></td>
         <td><%= staffmem.Salary %></td>
         <td><%= staffmem.Position %></td>
+        <td><a href=<%- JSON.stringify(staffmem.EditUrl) %> >Edit</a></td>
     </tr>
 <% } %>
 </table>
