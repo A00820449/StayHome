@@ -1,3 +1,4 @@
+/*Obtener el título de las películas más rentadas por cada género, junto con la cantidad de veces que ha sido rentada por estos:*/
 SELECT Title, Video_Grouped.Gender, Video_Grouped.C
 FROM (
     SELECT Gender, MAX(C) AS Max_C
@@ -26,3 +27,4 @@ AND Video_Grouped.C = Max_Count.Max_C
 LEFT JOIN Video
 ON Video_Grouped.CatalogNo = Video.CatalogNo
 ORDER BY Video_Grouped.Gender;
+

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stay Home - Catalog</title>
+    <%- include("common_headers") %> 
+</head>
+<body>
+    <%- include("nav-bar") %>
+    <div>
+        <a href="/team-queries">&lt; Back</a>
+    </div>
+    <h3>Results for Query: </h3>
+    <code><pre><%= query %> </pre></code>
+    <div class="table-wrapper">
+        <%- include("tables/generic_table", {data: results}) %> 
+    </div>
+</body>
+</html>

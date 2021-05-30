@@ -1,0 +1,15 @@
+
+<table>
+    <tr>
+    <% for( const key in data[0] ) { %>
+        <th> <%= key %> </th>
+    <% } %>
+    </tr>
+    <% for( const item of data ) { %>
+    <tr>
+        <% for( const key in item ) { %>
+        <td><%= item[key] %> </td>
+        <% } %>
+    </tr>
+    <% } %>
+</table>
