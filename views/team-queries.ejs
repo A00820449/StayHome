@@ -10,7 +10,11 @@
     <ul>
         <% for( file of files ) { %>
         <% const link = new URLSearchParams({filename: file}) %> 
-        <li><a href=<%= "/team-queries/file?" + link.toString() %>><%= file %></a></li>
+        <li>
+            <span><%= file %> - </span>
+            <a href=<%= "/team-queries/file?" + link.toString() %>>See</a>
+            <a href=<%= "/team-queries/run?" + link.toString() %>>Run</a>
+        </li>
         <% } %>
     </ul>
 </body>

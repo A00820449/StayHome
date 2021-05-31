@@ -3,6 +3,7 @@ const path = require("path");
 const express = require("express");
 const router = express.Router();
 const mysqlpool = require("../db_connection_pool");
+const { file } = require("googleapis/build/src/apis/file");
 
 router.get("/", async (req, res)=>{
     try {
@@ -15,7 +16,7 @@ router.get("/", async (req, res)=>{
     }
 });
 
-router.get("/file", async (req, res)=> {
+router.get("/run", async (req, res)=> {
     try {
         const filename = req.query.filename;
         const filepath = path.join(__dirname,"../public/sql-queries/", filename);
@@ -28,5 +29,19 @@ router.get("/file", async (req, res)=> {
         res.status(500).render("error_page", {message: e.message, backUrl: "/team-queries"});
     }
 });
+
+router.get("/file", async (req, res)=> {
+    try {
+        const filename = req.query.filename;
+        const filepath = path.join(__dirname,"../public/sql-queries/", filename);
+        const filecontent = fs.readFileSync(filepath, "utf8");
+        res.contentType("text/plain").send(filecontent);
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500).render("error_page", {message: e.message, backUrl: "/team-queries"});
+    }
+});
+
 
 module.exports = router;

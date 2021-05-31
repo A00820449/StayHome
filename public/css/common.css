@@ -76,3 +76,9 @@ hr{
 a, a:visited {
     color: white;
 }
+a:hover, a:visited:hover {
+    color: lightblue;
+}
+code > pre {
+    background-color: rgba(0, 0, 0, 0.5);
+}
