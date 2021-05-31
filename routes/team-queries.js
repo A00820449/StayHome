@@ -20,8 +20,13 @@ router.get("/run", async (req, res)=> {
         const filename = req.query.filename;
         const filepath = path.join(__dirname,"../public/sql-queries/", filename);
         const filecontent = fs.readFileSync(filepath, "utf8");
-        var [rows,] = await mysqlpool.query(filecontent);
-        res.render("query_results", {results: rows, query: filecontent});
+        try {
+            var [rows,] = await mysqlpool.query(filecontent);
+            res.render("query_results", {results: rows, query: filecontent});
+        }
+        catch(e) {
+            res.status(500).render("error_page", {message: filecontent + "\nError:\n" + e.message, backUrl: "/team-queries"});
+        }
     }
     catch(e) {
         console.log(e);
