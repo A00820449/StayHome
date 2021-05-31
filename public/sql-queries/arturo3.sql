@@ -6,6 +6,6 @@ WHERE Video.CatalogNo = Video_Rental.CatalogNo
 AND Video_Rental.RentalNo = Rental.RentalNo
 AND
 Rental.MemberNo = Member.MemberNo
-AND Video_Rental.DateReturn = '\N'
+AND Video_Rental.DateReturn IS NULL
 GROUP BY Member.Name 
 ORDER BY Member.MemberID;
